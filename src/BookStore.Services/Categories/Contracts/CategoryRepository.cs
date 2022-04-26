@@ -10,5 +10,6 @@ namespace BookStore.Services.Categories.Contracts
         Category GetById(int id);
         IList<GetCategoryDto> GetAll();
         void Delete(Category category);
+        bool IsCategoryTitleExist(string title);
     }
 }

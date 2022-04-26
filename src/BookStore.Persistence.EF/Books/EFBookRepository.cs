@@ -1,5 +1,7 @@
 ﻿using BookStore.Entities;
 using BookStore.Services.Books.Contracts;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BookStore.Persistence.EF.Books
 {
@@ -14,6 +16,18 @@ namespace BookStore.Persistence.EF.Books
         public void Add(Book book)
         {
             _dataContext.Books.Add(book);
+        }
+
+        public List<GetBookDto> GetAll()
+        {
+            return _dataContext.Books.Select(_ => new GetBookDto
+            {
+                Title = _.Title,
+                Pages = _.Pages,
+                Author = _.Author,
+                CategoryId = _.CategoryId,
+                Description = _.Description,
+            }).ToList();
         }
     }
 }

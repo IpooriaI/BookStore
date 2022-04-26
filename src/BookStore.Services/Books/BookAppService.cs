@@ -3,6 +3,7 @@ using BookStore.Infrastructure.Application;
 using BookStore.Services.Books.Contracts;
 using BookStore.Services.Books.Exceptions;
 using BookStore.Services.Categories.Contracts;
+using System.Collections.Generic;
 
 namespace BookStore.Services.Books
 {
@@ -43,6 +44,11 @@ namespace BookStore.Services.Books
 
             _repository.Add(book);
             _unitOfWork.Commit();
+        }
+
+        public List<GetBookDto> GetAll()
+        {
+            return _repository.GetAll();
         }
     }
 }

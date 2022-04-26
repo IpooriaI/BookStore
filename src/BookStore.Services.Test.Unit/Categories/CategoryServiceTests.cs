@@ -43,7 +43,7 @@ namespace BookStore.Services.Test.Unit.Categories
         }
 
         [Fact]
-        public void GetAll_returns_all_categories()
+        public void GetAll_returns_all_categories_properly()
         {
             CreateCategoriesInDataBase();
 
@@ -83,6 +83,24 @@ namespace BookStore.Services.Test.Unit.Categories
         }
 
         [Fact]
+        public void Update_should_throw_category_not_found_exception_if_category_doesnt_exist()
+        {
+            AddCategoryDto dto = 
+                CategoryServiceTools.GenerateAddCategoryDto("DummyName");
+            Category category = 
+                CategoryServiceTools.GenerateCategory(dto.Title);
+            _dataContext.Manipulate(_ => _.Categories.Add(category));
+            UpdateCategoryDto updateDto 
+                = CategoryServiceTools.GenerateUpdateCategoryDto("UpdatedCategory");
+
+
+            Action expected = () => _sut.Update(category.Id+1000,updateDto);
+
+
+            expected.Should().ThrowExactly<CategoryDosntExistException>();
+        }
+
+        [Fact]
         public void Delete_Deletes_the_selected_category_properly()
         {
             AddCategoryDto dto = CategoryServiceTools
@@ -107,6 +125,7 @@ namespace BookStore.Services.Test.Unit.Categories
             
             
             Action expected = () =>  _sut.Delete(category.Id);
+
 
             expected.Should().ThrowExactly<CategoryDosntExistException>();
         }

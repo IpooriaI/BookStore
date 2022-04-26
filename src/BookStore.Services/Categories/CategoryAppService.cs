@@ -25,6 +25,14 @@ namespace BookStore.Services.Categories
                 Title = dto.Title,
             };
 
+            var checkCategory = _repository
+                .IsCategoryTitleExist(category.Title);
+            if (checkCategory)
+            {
+                throw new CategoryIsAlreadyExistException();
+            }
+
+
             _repository.Add(category);
 
             _unitOfWork.Commit();
@@ -43,6 +51,11 @@ namespace BookStore.Services.Categories
         public void Update(int id, UpdateCategoryDto dto)
         {
             var category = _repository.GetById(id);
+            
+            if (category == null)
+            {
+                throw new CategoryDosntExistException();
+            }
 
             category.Title = dto.Title;
             _unitOfWork.Commit();

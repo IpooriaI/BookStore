@@ -38,11 +38,12 @@ namespace BookStore.Services.Test.Unit.Categories
         [Fact]
         public void Add_should_add_books_Properly()
         {
-            var category = CategoryServiceTools.GenerateCategory("asd");
+            var category = CategoryServiceTools.GenerateCategory("testTitle");
             _dataContext.Manipulate(_ => _.Categories.Add(category));
             var dto = BookServiceTools.GenerateAddBookDto(category.Id);
 
             _sut.Add(dto);
+
             _dataContext.Books.Should()
                 .Contain(_ => _.Title == dto.Title);
         }
@@ -54,14 +55,60 @@ namespace BookStore.Services.Test.Unit.Categories
             var dto = BookServiceTools.GenerateAddBookDto(fakeId);
 
             Action expected = () => _sut.Add(dto);
+
             expected.Should().ThrowExactly<CategoryDoesNotExistException>();
         }
 
         [Fact]
         public void GetAll_should_get_all_books_properly()
         {
+            var categories = new List<Category>
+            {
+                new Category { Title = "first category"},
+                new Category { Title = "second category"},
+                new Category { Title = "third category"}
+            };
+            _dataContext.Manipulate(_ => _.Categories.AddRange(categories));
+            var books = new List<Book>
+            {
+                new Book
+                {
+                    Title = "book1",
+                    Author = "author1",
+                    Description = "test discription",
+                    CategoryId = categories[0].Id,
+                    Pages = 20
+                },
+                new Book
+                {
+                    Title = "book2",
+                    Author = "author2",
+                    Description ="test discription",
+                    CategoryId = categories[1].Id,
+                    Pages = 20
+                },
+                new Book
+                {
+                    Title = "book2",
+                    Author = "author2",
+                    Description ="test discription",
+                    CategoryId = categories[2].Id,
+                    Pages = 20
+                }
+            };
+            _dataContext.Manipulate(_ => _.Books.AddRange(books));
 
+
+            var expected = _sut.GetAll();
+
+
+            expected.Should().HaveCount(3);
+            expected.Should().Contain(_ => _.Title == books[0].Title);
+            expected.Should().Contain(_ => _.Title == books[1].Title);
+            expected.Should().Contain(_ => _.Title == books[2].Title);
         }
+
+
 
     }
 

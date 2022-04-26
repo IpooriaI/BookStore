@@ -38,5 +38,10 @@ namespace BookStore.Persistence.EF.Categories
             return _dataContext.Categories
                 .FirstOrDefault(_ => _.Id == id);
         }
+
+        public bool IsCategoryTitleExist(string title)
+        {
+            return _dataContext.Categories.Any(_ => _.Title==title);
+        }
     }
 }
